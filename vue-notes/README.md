@@ -1,3 +1,10 @@
+
+```
+vue add router 
+vue add element
+....
+```
+
 ## 踩了一个坑
 
 ### 组件递归调用，内存溢出
@@ -91,3 +98,30 @@ dispatch(componentName, eventName, params) {
   }
 }
 ```
+
+## 通过props获取动态路由参数
+
+```html
+<div>
+  这是路由上的params的id：{{id}}, 通过props接收。
+
+  <pre class="border">
+    {
+      path: '/router-prop/:id',
+      <b class="red">props: true,</b>
+      name: 'routerProp',
+      component: () => import(/* webpackChunkName: "router" */ '../views/router_prop.vue')
+    }
+
+    --------
+
+    export default {
+      props:['id']
+    }
+  </pre>
+</div>
+```
+
+## Vuex原理
+
+![](https://vuex.vuejs.org/vuex.png)
