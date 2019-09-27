@@ -45,5 +45,10 @@ let routes = [
       }
     }
   },
+  {
+    path: '/vuex',
+    name: 'vuex',
+    component: () => import(/* webpackChunkName: "vuex" */ '../views/vuex.vue')
+  },
 ]
 export default routes

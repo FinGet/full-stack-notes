@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/form">form表单</router-link> |
       <router-link to="/cart">购物车</router-link> |
-      <router-link to="/router">vue-router</router-link> 
+      <router-link to="/router">vue-router</router-link> |
+      <router-link to="/vuex">vuex</router-link>
     </div>
   </div>
 </template>
