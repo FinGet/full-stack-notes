@@ -11,7 +11,7 @@
 <script>
   export default {
     mounted() {
-      // console.log(this.$store)
+      console.log(this.$store)
       setTimeout(() => {
         this.$store.state.count = 100;
       },1000)
