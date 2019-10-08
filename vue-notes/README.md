@@ -242,3 +242,103 @@ dispatch = (type, payload) => {
   this.actions[type](payload)
 }
 ```
+
+## vue-router
+
+和 vuex很像，是一开始就在各个组件上挂载一个`$router`和`$route`。
+
+三种模式：
+
+- history   history Api
+- hash      hash值
+- abstract  用在服务端
+
+### hash原理
+
+```html
+<a href="#home">首页</a>
+<a href="#about">关于</a>
+<div id="html"></div>
+```
+```javascript
+ // hash 原理
+window.addEventListener('load', function(){
+  html.innerHTML = location.hash.slice(1)
+})
+window.addEventListener('hashchange', function() {
+  html.innerHTML = location.hash.slice(1)
+})
+```
+
+### history原理
+
+History interface是浏览器历史记录栈提供的接口，通过back(),forward(),go()等方法，我们可以读取浏览器历史记录栈的信息，进行各种跳转操作。
+
+HTML5引入了history.pushState()和history.replaceState()方法，他们分别可以添加和修改历史记录条目。
+
+```javascript
+window.history.pushState(stateObject,title,url)
+window.history,replaceState(stateObject,title,url)
+```
+
+- stateObject:当浏览器跳转到新的状态时，将触发popState事件，该事件将携带这个stateObject参数的副本
+- title:所添加记录的标题
+- url:所添加记录的url(可选的)
+
+```html
+<a onclick="go('/home')">首页</a>
+<a onclick="go('/about')">关于</a>
+<div id="html"></div>
+```
+
+```javascript
+function go(pathname){
+  history.pushState({},null,pathname)
+  html.innerHTML = pathname;
+}
+window.addEventListener('popstate',() => {
+  go(location.pathname);
+})
+```
+
+### router-link
+
+```javascript
+Vue.component('router-link', {
+  props: {
+    to: {
+      type: String,
+      required: true
+    },
+    tag: {
+      type: String,
+      default: 'a'
+    }
+  },
+  methods: {
+    handleClick(){
+      
+    }
+  },
+  render(h) {
+    let mode = this.$router.mode;
+    let tag = this.tag;
+    return <tag on-click={this.handleClick} href={mode==='hash' ? `#${this.to}`: this.to}>{this.$slots.default}</tag>
+  }
+  })
+```
+
+### router-view
+
+根据路由生成一个路由表`（key-value）`，`key`表示当前路由，`value`表示对应的组件。
+通过`h`函数渲染组件。
+
+```javascript
+Vue.component('router-view', {
+  render(h) {
+    let current = this.$router.history.current || '/';
+    let routesMap = this.$router.routesMap;
+    return h(routesMap[current])
+  }
+})
+```
