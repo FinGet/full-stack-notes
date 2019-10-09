@@ -342,3 +342,15 @@ Vue.component('router-view', {
   }
 })
 ```
+
+## Vue工作机制
+
+### 初始化
+
+在 new Vue()之后。Vue会调用进行初始化，会初始化`生命周期`、`事件`、`props`、`methods`、`data`、`computed`与`watch`等。其中最重要的是通过`Object.defineProperty`设置`setter`与`getter`，用来实现「**响应式**」以及「**依赖收集**」。
+初始化之后调用$mount挂载组件。
+![](http://pz1uhohzm.bkt.clouddn.com/13128B24-5ABD-47BE-89F7-6ED696088F4A.png)
+
+
+[这里实现了一个简化版的MVVM-Vue。](https://github.com/FinGet/MVVM)
+ 
