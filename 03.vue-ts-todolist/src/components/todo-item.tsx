@@ -11,8 +11,8 @@ interface Item {
 
 export default class TodoItem extends Vue {
 	@Prop(Object) public item!: Item; // !表示必填属性
-	@Prop(Number) public index!: Number;
-	@Prop(Number) public edittingIndex!: Number;
+	@Prop(Number) public index!: number;
+	@Prop(Number) public edittingIndex!: number;
 
 	public edittingContent = '';
 
