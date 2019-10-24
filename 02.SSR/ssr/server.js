@@ -9,8 +9,8 @@ app.use(express.static('./dist'))
 
 // 第 2 步：获得一个createBundleRenderer
 const { createBundleRenderer } = require("vue-server-renderer");
-const bundle = require("./dist/vue-ssr-server-bundle.json");
-const clientManifest = require("./dist/vue-ssr-client-manifest.json");
+const bundle = require("./dist/vue-ssr-server-bundle.json.js");
+const clientManifest = require("./dist/vue-ssr-client-manifest.json.js");
 
 const renderer = createBundleRenderer(bundle, {
   runInNewContext: false,
