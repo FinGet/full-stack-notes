@@ -1,4 +1,4 @@
-import {Component, Vue, Prop, Emit} from 'vue-property-decorator';
+import {Component, Vue, Prop, Emit, Watch} from 'vue-property-decorator';
 // vue-property-decorator使用指南 https://juejin.im/post/5c173a84f265da610e7ffe44
 interface Item {
 	text: string;
@@ -31,6 +31,12 @@ export default class TodoItem extends Vue {
 		this.edittingContent = this.item.text;
 		return this.index;
 	}
+
+	@Watch('item', {immediate: true, deep: true})
+	public itemChange(val: Item, oldVal: Item) {
+		console.log(val, oldVal);
+	}
+
 	protected render() {
 		return (
 			<li>

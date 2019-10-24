@@ -39,6 +39,14 @@ export default class Todo extends Vue {
       complete: false
     }
   ]
+  // 生命周期
+  created() {
+    console.log('created')
+  }
+  // 计算属性
+  get listCount() {
+    return this.list.length;
+  }
   public addItem() {
     this.list.push({
       text: this.text,
