@@ -469,3 +469,37 @@ router.get(
 app.use(router.routes());
 app.listen(3000);
 ```
+
+
+### 开发一个api方式调用的组件
+
+```javascript
+export default (Vue) => {
+	Vue.component(MToast.name, MToast);
+	Vue.prototype.$mtoast = toast;
+}
+```
+1. 先写好一个vue组件
+2. 新建一个js文件作为api
+3. 在这个js文件中`extend`一个该组件，并新建一个组件实例
+4. 将该实例挂载到`body`中
+```javascript
+const ToastConstructor = Vue.extend(Component) // 创建一个组件
+const toast = (options) => {
+  const { 
+		autoClose, // autoClose 不是props， 所以要单独处理
+		...rest
+	} = options
+	const instance = new ToastConstructor({
+		propsData: {
+			...rest
+		},
+		data: {
+			autoClose: autoClose === undefined ? 3000 : autoClose // 没有传就设置默认3000
+		}
+  })
+  
+  instance.vm = instance.$mount() // 这样没有指定挂载位置，但会生成一个节点(vue实例)
+  document.body.appendChild(instance.vm.$el) // 放到body中
+}
+```
