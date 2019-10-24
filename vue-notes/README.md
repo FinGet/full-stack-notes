@@ -5,7 +5,7 @@ vue add element
 ....
 ```
 
-## 踩了一个坑
+## Vue核心
 
 ### 组件递归调用，内存溢出
 ```import name from 'xxxx'```
@@ -354,3 +354,118 @@ Vue.component('router-view', {
 
 [这里实现了一个简化版的MVVM-Vue。](https://github.com/FinGet/MVVM)
  
+## Vue实战技巧和坑
+
+[更多实战整理。](https://www.zybuluo.com/Bios/note/880207)
+
+
+### 路由拦截以及回跳
+
+```javascript
+...
+routes: [
+  {
+    path: '/',
+    name: 'home',
+    component: Home,
+    meta: {auth: true}
+  },
+]
+...
+
+router.beforeEach((to, from, next) => {
+  if(to.meta.auth) {
+    const token = localStorage.getItem('token');
+
+    if(token){
+      next()
+    } else {
+      // 没有登录跳到登录页，登录之后，直接跳转到to.path
+      next({
+        path: '/login',
+        query: {redirect: to.path}
+      })
+    }
+  } else {
+    next()
+  }
+})
+```
+
+### 请求拦截
+
+```javascript
+// 用于拦截请求和响应
+const axios = require('axios')
+
+export default function(vm){
+  // 设置请求拦截器
+  axios.interceptors.request.use(config => {
+      // 获取token
+      const token = localStorage.getItem('token')
+      if (token) { // 如果存在令牌这添加token请求头
+          config.headers.Authorization = 'Bearer ' + token;
+      }
+      return config;
+  })
+
+  // 响应拦截器
+  // 参数1表示成功响应
+  // 这里只关心失败响应
+  axios.interceptors.response.use(null, err => {
+    if (err.response.status === 401) { // 没有登录或者令牌过期
+      // 清空vuex和localstorage
+      vm.$store.dispatch("logout");
+      // 跳转login
+      vm.$router.push("/login");
+    }
+    return Promise.reject(err);
+  });
+}
+```
+
+### JWT（JSON web Token）
+
+```javascript
+const Koa = require("koa");
+const Router = require("koa-router");
+// 生成令牌、验证令牌
+const jwt = require("jsonwebtoken");
+const jwtAuth = require("koa-jwt");
+
+// 生成数字签名的秘钥
+const secret = "it's a secret";
+
+const app = new Koa();
+const router = new Router();
+
+router.get("/api/login", async ctx => {
+  const { username, passwd } = ctx.query;
+  console.log(username, passwd);
+
+  if (username == "kaikeba" && passwd == "123") {
+    // 生成令牌
+    const token = jwt.sign(
+      {
+        data: { name: "kaikeba" }, // 用户信息数据
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 // 过期时间
+      },
+      secret
+    );
+    ctx.body = { code: 1, token };
+  } else {
+    ctx.status = 401;
+    ctx.body = { code: 0, message: "用户名或者密码错误" };
+  }
+});
+
+router.get(
+  "/api/userinfo",
+  jwtAuth({ secret }),
+  async ctx => {
+    ctx.body = { code: 1, data: { name: "jerry", age: 20 } };
+  }
+);
+app.use(router.routes());
+app.listen(3000);
+```
