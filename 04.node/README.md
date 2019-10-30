@@ -47,6 +47,7 @@ response.writeHead(200, {
 ## HTTP协议
 
 [前端工程师，揭开HTTP的神秘面纱](https://finget.github.io/2018/07/03/http/)
+[HTTP协议思维导图](https://processon.com/view/5c5157f7e4b0f0908a8c996e#map)
 
 ### 实现一个及时聊天工具
 
