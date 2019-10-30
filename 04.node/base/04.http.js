@@ -14,6 +14,7 @@ const server = http.createServer((req, res) => {
       } else{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html')
+        res.setHeader('Set-Cookie', [ 'mycookie1=value1',  'mycookie2=value2'])
         res.end(data)
       }
     })

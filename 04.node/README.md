@@ -43,3 +43,74 @@ response.writeHead(200, {
     "Set-Cookie": "type=ninja"
 });
 ```
+
+## HTTP协议
+
+[前端工程师，揭开HTTP的神秘面纱](https://finget.github.io/2018/07/03/http/)
+
+### 实现一个及时聊天工具
+
+- scoket实现
+
+Net模块提供一个异步API能够创建基于流的TCP服务器，
+客户端与服务器建立连接后，服务器可以获得一个 全双工Socket对象，
+服务器可以保存Socket对象列表，在接收某客户端消息时，推送给其他客户端。
+
+```javascript
+const net = require('net')
+const chatServer = net.createServer(), clientList = []
+chatServer.on('connection', function (client) {
+  client.write('Hi!\n');
+  clientList.push(client)
+  client.on('data', function (data) {
+    clientList.forEach(v => {
+      v.write(data)
+    })
+  })
+})
+chatServer.listen(9000)
+```
+
+> telnet localhost 9000
+多建立几个链接，就可以广播了
+
+![](http://ww1.sinaimg.cn/large/0065fZzMgy1g8g7p2vvwtj30zq0kk0vo.jpg)
+
+- Socket.IO实现
+
+```javascript
+const io = require('socket.io')(server)
+io.on('connection', (socket) => {
+    console.log('io connection ..')
+    socket.on('chat', (msg) => {
+    });
+});
+app.post('/send', (req, res) => {
+    list.push(req.body.message) // // SocketIO 增加
+        io.emit('chat', list)
+        res.end(JSON.stringify(list))
+})
+```
+
+```javascript
+const socket = io(host) 
+socket.on('chat', list => {
+    this.list = list
+});
+```
+
+[这里有一个demo可以瞧一瞧](https://github.com/FinGet/socket_demo)
+
+
+### 跨域
+
+[各种跨域解决方案](https://github.com/FinGet/learn_notes/tree/master/%E5%90%84%E7%A7%8D%E8%B7%A8%E5%9F%9F%E6%96%B9%E6%A1%88)
+
+### 正向代理和反向代理
+
+正向代理是一个位于客户端和目标服务器之间的代理服务器(中间服务器)。为了从原始服务器取得内容，客户端向代理服务器发送一个请求，并且指定目标服务器，之后代理向目标服务器转交并且将获得的内容返回给客户端。正向代理的情况下客户端必须要进行一些特别的设置才能使用。
+
+反向代理正好相反。对于客户端来说，反向代理就好像目标服务器。并且客户端不需要进行任何设置。客户端向反向代理发送请求，接着反向代理判断请求走向何处，并将请求转交给客户端，使得这些内容就好似他自己一样，因此客户端并不会感知到反向代理后面的服务，也因此不需要客户端做任何设置，只需要把反向代理服务器当成真正的服务器就好了。
+
+
+[正向代理和反向代理的区别](https://www.tuicool.com/articles/M7bAnqy)
